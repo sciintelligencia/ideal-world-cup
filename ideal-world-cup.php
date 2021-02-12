@@ -17,8 +17,8 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if(!class_exists('StarterPlugin')) {
-    class StarterPlugin {
+if(!class_exists('IdealWorldCup')) {
+    class IdealWorldCup {
 	    /**
 	     * StarterPlugin constructor.
 	     * @since 1.0
@@ -117,7 +117,7 @@ if(!class_exists('StarterPlugin')) {
 			    'manage_options',
 			    TEXT_DOMAIN . '-home',
 			    [ $this, 'home' ],
-			    'dashicons-admin-site-alt2'
+			    plugin_dir_url( __FILE__ ) . "assets/images/logo.png"
 		    );
 
 		    add_submenu_page(
@@ -200,6 +200,7 @@ if(!class_exists('StarterPlugin')) {
 			        $ids = [];
 		        	foreach ( $data as $id ):
 				        $tournament = ideal_get_tournament_by_id( $id );
+				        ideal_get_winner_by_name_and_title( $tournament['name'], $tournament['title'] );
 		        	    array_push( $ids, $tournament );
 			        endforeach;
                     ideal_insert_tournament($ids);
@@ -249,7 +250,18 @@ if(!class_exists('StarterPlugin')) {
          */
         public function activate()
         {
-
+			global $wpdb;
+			$table = $wpdb->prefix . "ideal_winners";
+	        $charset_collate = $wpdb->get_charset_collate();
+	        $sql = "CREATE TABLE $table (
+						id mediumint (9) NOT NULL AUTO_INCREMENT,
+						name VARCHAR (255) NOT NULL,
+						title VARCHAR (255) NOT NULL,
+						votes VARCHAR (255) NOT NULL,
+						PRIMARY KEY (id)
+					) $charset_collate";
+			require_once ABSPATH . "wp-admin/includes/upgrade.php";
+			dbDelta($sql);
         }
 
         /**
@@ -264,4 +276,4 @@ if(!class_exists('StarterPlugin')) {
     }
 }
 
-new StarterPlugin();
+new IdealWorldCup();

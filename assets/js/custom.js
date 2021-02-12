@@ -96,4 +96,8 @@ let array_data = [];
             });
         }
     }
+
+    setInterval(function(){
+        $("#ranking-list").load($("#plugin_dir_url").val() + "../includes/ideal-ranking-list.php", {title: $("#title").val()});
+    }, 2000);
 }(jQuery));

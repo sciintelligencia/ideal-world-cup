@@ -1,7 +1,8 @@
 <input type="hidden" value="<?php echo plugin_dir_url( __FILE__ ) ?>" id="plugin_dir_url">
+<input type="hidden" value="<?php echo $title ?>" id="title">
 <link rel="stylesheet" href="https://www.kpopmap.com/wp-content/plugins/kpopmap-quiz/css/tournament.css">
 <div id="fwm_cont">
-    <div class="tournament-wrap">
+    <div class="tournament-wrap" style="width: 70%; float: left">
         <div class="tournament-win">
             <div class="bg" style="left: -100%;">
                 <div class="bg1"></div>
@@ -82,30 +83,18 @@
             </div>
         </div>
         <div style="clear:both;"></div>
-        <div class="tournament-ranking" style="display: block;">
-            <h3>Ranking</h3>
-            <ul class="Ranking_list">
-                <?php
-                $i = 1;
-                $winners = ideal_get_winners_by_title($title);
-                foreach ( $winners as $key => $winner):
-                    if ( $winner['votes'] == ideal_get_max_votes_by_title($title) ): ?>
-                        <li>
-                            <span class="medal gold"></span>
-                            <span class="rank"><?= $i ?></span>
-                            <span class="name"><?= $winner['name'] ?>
-                        </span><span class="vote"><?= $winner['votes'] ?></span>
-                        </li>
-                    <?  else: ?>
-                        <li>
-                            <span class="medal"></span>
-                            <span class="rank"><?= $i ?></span>
-                            <span class="name"><?= $winner['name'] ?>
-                        </span><span class="vote"><?= $winner['votes'] ?></span>
-                        </li>
-                    <?php endif;
-                $i++; endforeach; ?>
+        <div id="ranking-list"></div>
+    </div>
+    <div style="width: 30%;float: right">
+        <div id="lineup" class="partici single-side" style="">
+            <h5 class="widget-title" align="center">Line-ups</h5>
+            <ul class="lineup_ul">
+                <?php $all = ideal_get_all_tournament();
+                foreach ($all as $item) { ?>
+                    <li style="list-style: none"><?= $item['name'] ?></li>
+                <?php } ?>
             </ul>
         </div>
     </div>
+    <div style="content: '';clear: both;display: table"></div>
 </div>

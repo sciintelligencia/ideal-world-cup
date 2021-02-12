@@ -389,6 +389,9 @@ if ( !function_exists( 'ideal_create_winner' ) )
 	 */
 	function ideal_create_winner( $name, $title )
 	{
+		global $wpdb;
+		$table = $wpdb->prefix . "ideal_winners";
+		$wpdb->insert($table, ["name" => $name, "title" => $title, "votes" => 0]);
 		$option_name = "ideal_winners";
 		$options = get_option($option_name);
 		if (empty($options))
@@ -442,12 +445,29 @@ if ( !function_exists( "ideal_get_winners_by_title" ) )
 	}
 }
 
+if ( !function_exists( "ideal_update_winners_table" ) )
+{
+	function ideal_update_winners_table($name, $title)
+	{
+		$i = 0;
+		global $wpdb;
+		$table = $wpdb->prefix . "ideal_winners";
+		$result = $wpdb->get_results("SELECT * FROM $table WHERE name = '$name' AND title = '$title'");
+		$name = $result[$i]->name;
+		$title = $result[$i]->title;
+		$votes = $result[$i]->votes + 1;
+		$id = $result[$i]->id;
+		$wpdb->update($table, [ "votes" => $votes ], [ "id" => $id ]);
+	}
+}
+
 if ( !function_exists( "ideal_get_winner_by_name_and_title" ) )
 {
 	function ideal_get_winner_by_name_and_title( $name, $title )
 	{
 		$option_name = "ideal_winners";
 		$options = ideal_get_all_winners();
+		ideal_update_winners_table( $name, $title );
 		foreach ( $options as $option ):
 			if ( $option['title'] == $title )
 			{
@@ -481,5 +501,20 @@ if ( !function_exists( "ideal_get_max_votes_by_title" ) )
 			$vot[] = $vote['votes'];
 		endforeach;
 		return max($vot);
+	}
+}
+
+if ( !function_exists( "ideal_get_winner_from_table" ) )
+{
+	/**
+	 * @param $title
+	 *
+	 * @return array|object|null
+	 */
+	function ideal_get_winner_from_table( $title )
+	{
+		global $wpdb;
+		$table = $wpdb->prefix . "ideal_winners";
+		return $wpdb->get_results("SELECT * FROM $table WHERE title = '$title' ORDER BY votes DESC");
 	}
 }

@@ -14,7 +14,7 @@ $max = count(ideal_get_tournament_by_ip());
 if ($max <= 1)
 {
     $result = ideal_create_tournament_by_ip( 0 );
-    ideal_get_winner_by_name_and_title( $result['data'][0]['name'], $result['data'][0]['title'] );
+//    ideal_get_winner_by_name_and_title( $result['data'][0]['name'], $result['data'][0]['title'] );
     ?>
     <style type="text/css">
         #play-level-2 {
